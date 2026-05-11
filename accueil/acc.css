@@ -11,7 +11,8 @@
 body, html {
     margin: 0;
     padding: 0;
-    overflow: hidden;
+    /* CHANGEMENT : Activation des barres de défilement pour la compatibilité mobile */
+    overflow: auto;
     height: 100%;
     /* On force le blanc pur pour masquer les bords des JPG */
     background-color: #ffffff; 
