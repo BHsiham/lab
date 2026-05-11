@@ -1,0 +1,427 @@
+:root {
+    --bg-dots: #f0f0f0;
+    --zone-color: #f5f1e6;
+    --stroma-green: #ccffcc;
+    --accent-purple: #8e44ad;
+    --accent-orange: #e59866;
+    
+    /* Couleurs Moléculaires */
+    --carbon-gray: #444;
+    --carbon-orange: #f39c12;
+    --carbon-green: #27ae60;
+    --carbon-brown: #795548;
+    --oxygen-red: #e74c3c;
+    --g3p-yellow: #fff176;
+    
+    /* Nouvelles couleurs pour contrôles */
+    --ctrl-bg: #ffffff;
+    --ctrl-hover: #f8f9fa;
+    --pause-active: #ffeb3b;
+
+    /* Couleurs Batteries */
+    --bat-high: #2ecc71;
+    --bat-mid: #f1c40f;
+    --bat-low: #e74c3c;
+}
+
+/* 1. Base et Mise en page */
+body { 
+    margin: 0; 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+    background-color: #fafafa; 
+    background-image: radial-gradient(#d1d1d1 1px, transparent 1px); 
+    background-size: 20px 20px; 
+    color: #2c3e50;
+    overflow: hidden;
+    transition: background-color 1s ease;
+}
+
+#main-interface { 
+    display: grid; 
+    grid-template-columns: 300px 1fr 300px; 
+    height: 100vh; 
+    gap: 20px; 
+    padding: 20px; 
+    box-sizing: border-box; 
+}
+
+/* 2. Zones Latérales */
+#recuperes-zone, #legende-banque { 
+    background: var(--zone-color); 
+    border-radius: 25px; 
+    border: 2px solid #e0d7c5; 
+    padding: 25px; 
+    display: flex; 
+    flex-direction: column; 
+    box-shadow: 4px 4px 15px rgba(0,0,0,0.05);
+    overflow-y: auto;
+    transition: all 1s ease;
+}
+
+h2 {
+    font-size: 1.4em;
+    margin-top: 0;
+    text-align: center;
+    border-bottom: 2px solid rgba(0,0,0,0.1);
+    padding-bottom: 10px;
+}
+
+.legend-content { font-size: 0.9em; line-height: 1.6; }
+
+.legend-item {
+    margin-bottom: 12px;
+    padding-left: 10px;
+    border-left: 3px solid var(--accent-orange);
+}
+
+/* 3. Zone "Récupérés" */
+#basket-out {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+}
+
+.sub-storage {
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 15px;
+    padding: 15px;
+    border: 1px solid #dcd7ca;
+    min-height: 80px;
+}
+
+.sub-storage small {
+    display: block;
+    color: #7f8c8d;
+    font-size: 0.75em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+/* --- OPTIMISATION O1 : BATTERIES ET TOGGLE --- */
+.energy-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-end;
+    margin: 15px 0;
+    padding: 10px;
+    background: #f1f2f6;
+    border-radius: 12px;
+    transition: background 1s ease;
+}
+
+.battery-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+.battery-body {
+    width: 35px;
+    height: 70px;
+    border: 3px solid #34495e;
+    border-radius: 6px;
+    position: relative;
+    background: #fff;
+    padding: 2px;
+    overflow: hidden; /* Pour contenir le remplissage */
+}
+
+.battery-body::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 15px;
+    height: 6px;
+    background: #34495e;
+    border-radius: 2px 2px 0 0;
+    z-index: 5;
+}
+
+/* O3 : Effet de chargement (Icône éclair) */
+.charge-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.2em;
+    z-index: 4;
+    display: none;
+    text-shadow: 0 0 4px rgba(0,0,0,0.3);
+}
+
+.charging .charge-icon {
+    display: block;
+    animation: charge-pulse 1s infinite;
+}
+
+.battery-fill {
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    transition: height 0.8s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.8s linear;
+}
+
+/* O2 : Classes de couleurs dynamiques */
+.bat-green { background-color: var(--bat-high) !important; box-shadow: inset 0 0 10px rgba(46, 204, 113, 0.5); }
+.bat-yellow { background-color: var(--bat-mid) !important; box-shadow: inset 0 0 10px rgba(241, 196, 15, 0.5); }
+.bat-red { background-color: var(--bat-low) !important; box-shadow: inset 0 0 10px rgba(231, 76, 60, 0.5); animation: alert-blink 0.5s infinite alternate; }
+
+.battery-label { font-size: 0.7em; font-weight: bold; color: #2c3e50; }
+
+#btn-light-toggle {
+    margin: 10px 0;
+    padding: 10px;
+    border: none;
+    border-radius: 30px;
+    font-weight: bold;
+    cursor: pointer;
+    background: #27ae60;
+    color: white;
+    box-shadow: 0 4px 0 #1e8449;
+    transition: all 0.2s;
+}
+
+#btn-light-toggle.off {
+    background: #7f8c8d;
+    box-shadow: 0 4px 0 #616a6b;
+}
+
+/* 4. Zone Centrale (Stroma) */
+#stroma-reaction { display: flex; flex-direction: column; gap: 15px; }
+
+.title-tab { 
+    background: var(--stroma-green); 
+    padding: 12px 40px; 
+    border-radius: 50px; 
+    border: 2px solid #a2d9a2; 
+    font-weight: bold; 
+    align-self: center; 
+}
+
+#reaction-arena { 
+    flex-grow: 1; 
+    border: 3px dashed #cbd5e0; 
+    border-radius: 40px; 
+    position: relative; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    background: rgba(255, 255, 255, 0.3);
+    transition: filter 0.8s ease, background 0.8s ease;
+}
+
+#spawn-shelf {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.7);
+    padding: 15px;
+    border-radius: 20px;
+    border: 1px solid #e2e8f0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    z-index: 5;
+    transition: background 1s ease;
+}
+
+/* 5. Réactifs & Molécules */
+.reactant { cursor: grab; display: flex; flex-direction: column; align-items: center; gap: 8px; transition: transform 0.2s; }
+.reactant:hover { transform: scale(1.1); }
+
+.g3p-container { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; max-width: 400px; animation: fadeIn 0.5s ease; }
+
+.g3p-block {
+    width: 50px; height: 50px;
+    background: radial-gradient(circle at 15px 15px, var(--g3p-yellow), #fbc02d);
+    border: 2px solid #f9a825;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: bold; font-size: 0.8em; color: #5f4b00;
+    cursor: grab; transition: all 0.2s ease;
+}
+
+.g3p-block:hover { transform: scale(1.15) rotate(5deg); }
+
+/* Molécules CO2/Atomes */
+.co2-molecule { display: flex; align-items: center; gap: 2px; }
+.bond { width: 6px; height: 3px; background: #bdc3c7; border-radius: 2px; }
+.atom {
+    width: 22px; height: 22px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 9px; font-weight: bold;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+}
+.atom.carbon { background: radial-gradient(circle at 6px 6px, var(--carbon-gray), #000); }
+.atom.oxygen { background: radial-gradient(circle at 6px 6px, #ff7675, var(--oxygen-red)); }
+.atom.rubp-c { background: radial-gradient(circle at 6px 6px, var(--carbon-orange), #d35400); }
+
+/* Rubisco */
+#rubisco-altar { 
+    width: 170px; height: 170px; 
+    display: flex; align-items: center; justify-content: center; 
+    background: #ffffff; border-radius: 50%; 
+    border: 5px solid var(--accent-purple); 
+    color: var(--accent-purple); font-weight: bold;
+    transition: all 1s ease;
+}
+
+.rubisco-finished { opacity: 0.15; border-style: dashed; transform: scale(0.85); }
+
+/* 6. Zone Résultat & Félicitations */
+#result-display {
+    position: absolute; bottom: 25px;
+    background: #fff3e0; border: 2px solid #ff9800;
+    padding: 12px 25px; border-radius: 15px; text-align: center;
+}
+
+#congrats-overlay {
+    position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.5);
+    background: rgba(46, 204, 113, 0.95); color: white;
+    padding: 30px 60px; border-radius: 60px; font-size: 1.8em; font-weight: bold;
+    opacity: 0; pointer-events: none; z-index: 1000;
+    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+#congrats-overlay.show { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+
+/* 7. Barre de Contrôle */
+.ctrl-btn {
+    padding: 10px 20px; border-radius: 12px; border: 1px solid #d1d5db;
+    background: var(--ctrl-bg); cursor: pointer; font-weight: 600; color: #4b5563;
+    transition: all 0.2s ease;
+}
+.ctrl-btn:hover { background: var(--ctrl-hover); transform: translateY(-2px); }
+
+/* 8. AJUSTEMENT 14 : Quiz d'introduction */
+#quiz-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(44, 62, 80, 0.9); backdrop-filter: blur(8px);
+    display: flex; justify-content: center; align-items: center; z-index: 2000;
+    transition: opacity 0.5s ease;
+}
+
+.quiz-card {
+    background: white; padding: 40px; border-radius: 25px;
+    max-width: 500px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+}
+
+.quiz-options { display: flex; flex-direction: column; gap: 12px; margin: 25px 0; }
+
+.quiz-options button {
+    padding: 15px; border: 2px solid #e2e8f0; border-radius: 12px;
+    background: #f8fafc; cursor: pointer; font-size: 1rem; transition: all 0.2s;
+}
+.quiz-options button:hover { border-color: var(--accent-orange); background: #fff7ed; }
+
+/* 9. Animations */
+@keyframes catalyze-pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.15); box-shadow: 0 0 40px var(--accent-purple); }
+    100% { transform: scale(1); }
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    75% { transform: translateX(10px); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* O3 : Animation de pulsation pour le chargement */
+@keyframes charge-pulse {
+    0% { opacity: 0.3; transform: translate(-50%, -50%) scale(0.8); }
+    50% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+    100% { opacity: 0.3; transform: translate(-50%, -50%) scale(0.8); }
+}
+
+/* Nouvelles animations de correction visuelle */
+@keyframes alert-blink {
+    from { opacity: 1; }
+    to { opacity: 0.7; }
+}
+
+/* 10. Guide & Divers */
+.step-card { 
+    background: #ffffff; padding: 18px 50px; border-radius: 30px; 
+    border: 2px solid var(--accent-orange); color: #e67e22;
+    font-weight: bold; text-align: center; box-shadow: 0 6px 0px var(--accent-orange);
+}
+
+.waste-mol {
+    font-size: 0.8em; padding: 8px 15px; background: #fff;
+    border: 2px solid #edf2f7; border-radius: 10px; font-weight: bold;
+    margin: 5px; display: inline-block; box-shadow: 3px 3px 0px #cbd5e0;
+}
+
+/* --- AJUSTEMENT : DARK MODE (OBSCURITÉ TOTALE) --- */
+body.dark-mode {
+    background-color: #0f172a;
+    background-image: radial-gradient(#1e293b 1px, transparent 1px);
+    color: #e2e8f0;
+}
+
+body.dark-mode #recuperes-zone, 
+body.dark-mode #legende-banque {
+    background: #1e293b;
+    border-color: #334155;
+    color: #f1f5f9;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+body.dark-mode h2 {
+    border-bottom-color: #334155;
+    color: #94a3b8;
+}
+
+body.dark-mode .sub-storage {
+    background: rgba(15, 23, 42, 0.6);
+    border-color: #334155;
+}
+
+body.dark-mode .energy-container {
+    background: #0f172a;
+}
+
+body.dark-mode .battery-label {
+    color: #94a3b8;
+}
+
+body.dark-mode #reaction-arena {
+    background: rgba(0, 0, 0, 0.6);
+    border-color: #1e293b;
+}
+
+body.dark-mode #spawn-shelf {
+    background: rgba(30, 41, 59, 0.8);
+    border-color: #334155;
+}
+
+body.dark-mode #rubisco-altar {
+    background: #0f172a;
+    border-color: #4c1d95;
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.2);
+}
+
+body.dark-mode .step-card {
+    background: #1e293b;
+    border-color: #9a3412;
+    box-shadow: 0 6px 0px #7c2d12;
+}
+
+body.dark-mode .waste-mol {
+    background: #1e293b;
+    border-color: #334155;
+    color: #cbd5e1;
+    box-shadow: 3px 3px 0px #0f172a;
+}
