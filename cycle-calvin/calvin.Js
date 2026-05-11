@@ -190,6 +190,10 @@ function setupTouchSupport() {
             const isOverArena = dropTarget?.closest('#reaction-arena');
             const isOverExport = dropTarget?.closest('#export-bin');
             
+            // Correction Tactile : Vérifier si on est sur la RubisCO spécifiquement pour l'étape 1
+            const rubiscoRect = rubisco.getBoundingClientRect();
+            const isOverRubisco = (pos.x >= rubiscoRect.left && pos.x <= rubiscoRect.right && pos.y >= rubiscoRect.top && pos.y <= rubiscoRect.bottom);
+
             el.style.display = '';
             el.style.position = '';
             el.style.left = '';
@@ -197,7 +201,7 @@ function setupTouchSupport() {
 
             if (isOverExport && state.step === 2.5 && el.id.includes('g3p')) {
                 handleG3PExport(el.id);
-            } else if (isOverArena) {
+            } else if (isOverArena || isOverRubisco) {
                 handleReactionLogic(el.id);
             }
         });
