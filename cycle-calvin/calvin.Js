@@ -105,10 +105,8 @@ function checkQuiz(answer) {
         feedback.innerText = "✅ Bonne réponse ! Chargement du Stroma...";
         
         setTimeout(() => {
-            overlay.style.opacity = "0";
-            overlay.style.pointerEvents = "none";
-            setTimeout(() => overlay.remove(), 500);
-        }, 1000);
+            overlay.style.display = "none";
+        }, 800);
     } else {
         feedback.style.color = "#e74c3c";
         feedback.innerText = "❌ Mauvaise réponse. Réessayez !";
