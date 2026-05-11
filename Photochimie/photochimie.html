@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bio-Chain Interactive - Phase Claire (Optimisé)</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Styles spécifiques pour l'apparence moderne sans changer le fonctionnement */
+        #game-container {
+            display: flex;
+            height: 100vh;
+            width: 100vw;
+            background-color: #1a1a1a;
+        }
+
+        #simulator-area {
+            flex: 3; /* 75% de l'écran */
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            border-right: 2px solid #333;
+        }
+
+        /* Légende à droite */
+        #aside-legend {
+            flex: 1; /* 25% de l'écran */
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px;
+            overflow-y: auto;
+            font-family: sans-serif;
+        }
+
+        /* Étiquette de la membrane en haut */
+        .membrane-header {
+            position: absolute;
+            top: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            z-index: 10;
+        }
+
+        /* Barre d'instruction blanche en bas */
+        #instruction-container {
+            background-color: white !important;
+            color: #333 !important;
+            border-radius: 8px;
+            padding: 10px 20px;
+            margin: 0 20px;
+            min-width: 400px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        
+        #instruction {
+            color: #333 !important;
+            font-weight: bold;
+        }
+
+        /* Conservation de l'apparence des molécules */
+        #h2o-source { color: white !important; }
+        #nadp-target { color: #4a148c !important; }
+    </style>
+</head>
+<body>
+
+    <div id="game-container">
+        
+        <div id="simulator-area">
+
+            <div id="electron-info-popup" class="sci-validation-box" style="display: none;">
+                <div class="popup-icon-container">
+                    <div class="popup-warning-triangle"></div>
+                </div>
+                <div class="popup-content-wrapper">
+                    <p class="popup-message-text">L'électron (e-) que vous voyez est libéré après excitation du PS (il s'est oxydé).</p>
+                    <button class="btn-compris" onclick="fermerPopupElectron()">Compris!</button>
+                </div>
+            </div>
+
+            <div class="zone stroma" id="stroma">
+                <span class="label-zone">STROMA (pH ~8)</span>
+                
+                <div id="reduction-overlay" class="sci-validation-box" style="display: none;">
+                    <div class="sci-card">
+                        <h4>Validation Scientifique</h4>
+                        <p>Réaction de réduction du NADP+ :</p>
+                        <div class="input-row">
+                            <input type="text" id="reduction-input" placeholder="Écrivez l'équation ici..." autocomplete="off">
+                            <button type="button" class="btn-symbol" onclick="insertArrowA2()">→</button>
+                        </div>
+                        <button id="btn-validate-reduction" class="btn-validate" onclick="verifierReduction()">Valider l'étape</button>
+                        <small>Aide : Utilisez "→" et respectez les charges (ex: NADP+, H+, e-).</small>
+                        <div id="reduction-feedback"></div>
+                    </div>
+                </div>
+
+                <div id="bilan-overlay" class="sci-validation-box" style="display: none;">
+                    <div class="sci-card">
+                        <h4>Équation Bilan Finale</h4>
+                        <p>Bravo ! Complétez maintenant l'équation bilan de la phase claire :</p>
+                        <div class="input-row">
+                            <input type="text" id="bilan-input" placeholder="Écrivez l'équation ici..." autocomplete="off">
+                            <button type="button" class="btn-symbol" onclick="insertArrowBilan()">→</button>
+                        </div>
+                        <button id="btn-validate-bilan" class="btn-validate" onclick="verifierBilanFinal()">Valider le bilan</button>
+                        <small>Indice : 2H2O + 2NADP + ADP + Pi → ...</small>
+                        <div id="bilan-feedback"></div>
+                    </div>
+                </div>
+
+                <div id="victory-overlay" class="sci-validation-box" style="display: none; border: 3px solid #27ae60;">
+                    <div class="sci-card">
+                        <h2 style="color: #27ae60; margin-top: 0;">🏆 BRAVO !</h2>
+                        <p style="font-size: 1.1em; font-weight: bold;">Mission accomplie !</p>
+                        <p>Vous avez terminé avec succès la simulation de la phase claire.</p>
+                        <button class="btn-validate" onclick="reinitialiser()">Recommencer</button>
+                    </div>
+                </div>
+
+                <div id="light-shelf">
+                    <div id="light-500" class="light-beam" draggable="true" style="background: #4caf50;">500nm</div>
+                    <div id="light-680" class="light-beam" draggable="true" style="background: #ff5252; box-shadow: 0 0 10px #ff5252;">680nm</div>
+                    <div id="light-700" class="light-beam" draggable="true" style="background: #d32f2f; box-shadow: 0 0 10px #d32f2f;">700nm</div>
+                </div>
+
+                <div id="nadp-target" class="draggable-product product-case nadp-case" draggable="true">NADP+</div>
+            </div>
+
+            <div class="zone membrane" id="membrane">
+                <div class="membrane-header">Membrane du Thylakoïde</div>
+
+                <div class="complex drop-target" id="ps2" title="Photosystème II">PSII</div>
+                <div class="complex drop-target" id="t1" title="Plastoquinone">T1</div>
+                <div class="complex drop-target" id="e2" title="Complexe b6f">E2</div>
+                <div class="complex drop-target" id="t2" title="Plastocyanine">T2</div>
+                <div class="complex drop-target" id="ps1" title="Photosystème I">PSI</div>
+                <div class="complex drop-target" id="t3" title="Ferrédoxine">T3</div>
+                <div class="complex drop-target" id="e3" title="NADP réductase">E3</div>
+                
+                <div class="complex drop-target" id="atp-synthase" title="ATP Synthase">
+                    ATP Synthase
+                </div>
+            </div>
+
+            <div class="zone lumen" id="lumen">
+                <span class="label-zone">LUMEN (pH ~5)</span>
+                
+                <div id="photolysis-overlay" class="sci-validation-box" style="display: none;">
+                    <div class="sci-card">
+                        <h4>Validation Scientifique</h4>
+                        <p>Réaction de photolyse de l'eau :</p>
+                        <div class="input-row">
+                            <input type="text" id="photolysis-input" placeholder="Écrivez l'équation ici..." autocomplete="off">
+                            <button type="button" class="btn-symbol" onclick="insertArrow()">→</button>
+                        </div>
+                        <button id="btn-validate-sci" class="btn-validate" onclick="verifierPhotolyse()">Valider l'étape</button>
+                        <small>Aide : Utilisez "→" et respectez les charges (ex: H+, e-).</small>
+                        <div id="sci-feedback"></div>
+                    </div>
+                </div>
+
+                <div id="atp-validation-overlay" class="sci-validation-box" style="display: none;">
+                    <div class="sci-card">
+                        <h4>Validation Scientifique</h4>
+                        <p>Réaction de phosphorylation de l'ADP :</p>
+                        <div class="input-row">
+                            <input type="text" id="atp-input" placeholder="Écrivez l'équation ici..." autocomplete="off">
+                            <button type="button" class="btn-symbol" onclick="insertArrowATP()">→</button>
+                        </div>
+                        <button id="btn-validate-atp" class="btn-validate" onclick="verifierATP()">Valider l'étape</button>
+                        <small>Aide : ADP + ... → ...</small>
+                        <div id="atp-feedback"></div>
+                    </div>
+                </div>
+
+                <div id="h2o-source" class="draggable-product" draggable="true">
+                    <div id="h2o-molecule">
+                        <div class="atom-o">O</div>
+                        <div class="atom-h h1">H</div>
+                        <div class="atom-h h2">H</div>
+                    </div>
+                </div>
+                
+                <div id="adp-pi" class="draggable-product product-case adp-case" draggable="true" style="display:none;">
+                    ADP + Pi
+                </div>
+            </div>
+
+            <div id="ui-panel">
+                <div class="controls-group">
+                    <button onclick="reinitialiser()" class="btn-ui">🔄 Réinitialiser</button>
+                    <button onclick="reculerEtape()" class="btn-ui">⬅️ Retour</button>
+                </div>
+
+                <div id="instruction-container">
+                    <div id="instruction">
+                        Étape 1 : Choisissez la radiation convenable (680nm) pour activer le PSII.
+                    </div>
+                </div>
+
+                <div class="stats-group">
+                    <div class="stat">ATP : <span id="atp-count">0</span></div>
+                    <div class="stat">NADPH,H+ : <span id="nadph-count">0</span></div>
+                </div>
+            </div>
+        </div>
+
+        <aside id="aside-legend">
+            <h3>Légende & Rôles</h3>
+            <ul style="list-style: none; padding: 0; line-height: 1.6;">
+                <li><strong>PSII :</strong> Photosystème II (P680)</li>
+                <li><strong>T1 :</strong> Plastoquinone</li>
+                <li><strong>E2 :</strong> Complexe Cytochrome b6f</li>
+                <li><strong>T2 :</strong> Plastocyanine</li>
+                <li><strong>PSI :</strong> Photosystème I (P700)</li>
+                <li><strong>T3 :</strong> Ferrédoxine</li>
+                <li><strong>E3 :</strong> NADP Réductase</li>
+                <li><strong>ATP Synthase :</strong> Synthèse d'ATP via gradient H+</li>
+                <hr style="border: 0.5px solid #555;">
+                <li><strong>H2O :</strong> Donneur d'électrons (Photolyse)</li>
+                <li><strong>NADP+ :</strong> Accepteur final d'électrons</li>
+                <li><strong>1/2 O2 :</strong> Dégagement de dioxygène</li>
+            </ul>
+        </aside>
+
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        function fermerPopupElectron() {
+            document.getElementById('electron-info-popup').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

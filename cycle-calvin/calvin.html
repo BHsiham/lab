@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cycle de Calvin - Simulateur Interactif</title>
+    <link rel="stylesheet" href="calvin.css">
+</head>
+<body>
+    <div id="quiz-overlay">
+        <div class="quiz-card">
+            <h3>🧪 Test d'entrée en laboratoire</h3>
+            <p><strong>Question :</strong> Quel est l'objectif principal du cycle de Calvin au sein du stroma ?</p>
+            
+            <div class="quiz-options">
+                <button onclick="checkQuiz('A')">A) Produire de l'oxygène</button>
+                <button onclick="checkQuiz('B')">B) Convertir le carbone minéral (CO₂) en carbone organique (sucre)</button>
+                <button onclick="checkQuiz('C')">C) Capter l'énergie lumineuse</button>
+            </div>
+            <p id="quiz-feedback"></p>
+        </div>
+    </div>
+
+    <div id="main-interface">
+        
+        <aside id="recuperes-zone">
+            <h2>Récupérés</h2>
+            
+            <div id="energy-management" style="margin-bottom: 20px; text-align: center; border-bottom: 2px solid rgba(0,0,0,0.1); padding-bottom: 15px;">
+                <small id="light-status-label" style="font-weight: bold; color: #7f8c8d; text-transform: uppercase;">Lumière</small>
+                <button id="btn-light-toggle" class="ctrl-btn" style="width: 100%; margin: 10px 0; font-size: 1.1em;">ON</button>
+                
+                <div class="energy-container">
+                    <div class="battery-wrapper">
+                        <div class="battery-body charging">
+                            <div id="atp-charge-icon" class="charge-icon">⚡</div>
+                            <div id="atp-battery-fill" class="battery-fill" style="height: 100%; background-color: #27ae60;"></div>
+                        </div>
+                        <span class="battery-label">ATP</span>
+                    </div>
+                    <div class="battery-wrapper">
+                        <div class="battery-body charging">
+                            <div id="nadph-charge-icon" class="charge-icon">⚡</div>
+                            <div id="nadph-battery-fill" class="battery-fill" style="height: 100%; background-color: #27ae60;"></div>
+                        </div>
+                        <span class="battery-label">NADPH,H+</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="basket-out">
+                
+                <div class="sub-storage">
+                    <small>Recyclage (Thylakoïdes)</small>
+                    <div id="recycle-bin" class="drop-grid">&nbsp;</div>
+                </div>
+                
+                <div class="sub-storage">
+                    <small>Matière organique prête</small>
+                    <div id="export-bin" class="drop-grid">&nbsp;</div>
+                </div>
+
+            </div>
+        </aside>
+
+        <main id="stroma-reaction">
+            <header class="title-tab">Stroma : espace réactionnel</header>
+            
+            <div id="reaction-arena">
+                <div id="stroma-display" style="position: absolute; width: 100%; height: 100%; border-radius: 40px; pointer-events: none; z-index: 1;"></div>
+                
+                <div id="spawn-shelf" style="z-index: 5;">
+                    <div class="reactant" id="co2-batch" draggable="true">
+                        <div class="co2-molecule">
+                            <div class="atom oxygen">O</div>
+                            <div class="bond"></div>
+                            <div class="atom carbon">C</div>
+                            <div class="bond"></div>
+                            <div class="atom oxygen">O</div>
+                        </div>
+                        <strong>3 CO₂</strong>
+                    </div>
+
+                    <div class="reactant" id="rubp-batch" draggable="true">
+                        <div class="carbon-chain" style="display: flex; gap: 2px;">
+                            <div class="atom rubp-c">C</div>
+                            <div class="atom rubp-c">C</div>
+                            <div class="atom rubp-c">C</div>
+                            <div class="atom rubp-c">C</div>
+                            <div class="atom rubp-c">C</div>
+                        </div>
+                        <strong>3 RuBP</strong>
+                    </div>
+                </div>
+
+                <div id="rubisco-altar" style="z-index: 5;">
+                    <span>RubisCO</span>
+                </div>
+
+                <div id="result-display" style="display: none; z-index: 10;">
+                    <span class="result-label">Transformation chimique</span>
+                    <div id="result-text"></div>
+                </div>
+            </div>
+
+            <footer id="step-guide">
+                <div class="step-card">
+                    <span id="current-step-text">Étape 1 : Fixez le 3CO₂ sur le 3RuBP en les glissant sur la RubisCO</span>
+                </div>
+
+                <div id="controls-bar" style="margin-top: 15px; display: flex; justify-content: center; gap: 10px;">
+                    <button id="btn-back" class="ctrl-btn">⬅️ Retour</button>
+                    <button id="btn-pause" class="ctrl-btn">⏸️ Pause</button>
+                    <button id="btn-reset" class="ctrl-btn">🔄 Réinitialiser</button>
+                </div>
+            </footer>
+        </main>
+
+        <aside id="legende-banque">
+            <h2>Légende</h2>
+            <div class="legend-content">
+                <p><strong>Réactifs & Molécules :</strong></p>
+                
+                <div class="legend-item">
+                    <strong>CO₂ :</strong> Dioxyde de carbone (Source de carbone minéral).
+                </div>
+                
+                <div class="legend-item">
+                    <strong>RuBP :</strong> Ribulose-1,5-bisphosphate (Sucre à 5 carbones).
+                </div>
+                
+                <div class="legend-item">
+                    <strong>RubisCO :</strong> Enzyme catalysant la fixation du carbone.
+                </div>
+
+                <div class="legend-item">
+                    <strong>APG :</strong> Acide phosphoglycérique (Intermédiaire stable en C3).
+                </div>
+
+                <div class="legend-item">
+                    <strong>G3P :</strong> Glycéraldéhyde-3-phosphate (Produit riche en énergie).
+                </div>
+
+                <div class="legend-item">
+                    <strong>ATP / NADPH :</strong> Énergie chimique nécessaire au cycle.
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <script src="calvin.js"></script>
+</body>
+</html>

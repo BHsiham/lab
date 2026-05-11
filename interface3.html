@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>BioChain - Stroma Riche</title>
+    <link rel="stylesheet" href="accueil/acc.css">
+    <style>
+        body {
+            /* Chemin corrigé : depuis la racine vers le dossier accueil/images */
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('accueil/images/stroma_zoom.png') no-repeat center center fixed;
+            background-size: cover;
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 40px;
+            border-radius: 25px;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            z-index: 10;
+            max-width: 600px;
+        }
+
+        h1 { color: #2e7d32; margin-bottom: 10px; }
+        p { font-size: 1.2rem; color: #444; }
+
+        .btn-sombre {
+            margin-top: 25px;
+            padding: 15px 40px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: white;
+            background: linear-gradient(45deg, #8e44ad, #9b59b6);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 5px 15px rgba(142, 68, 173, 0.4);
+        }
+
+        .btn-sombre:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(142, 68, 173, 0.6);
+        }
+
+        .molecule {
+            position: absolute;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            pointer-events: none;
+            animation: float 8s infinite ease-in-out;
+            opacity: 0.8;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(30px, -50px) rotate(10deg); }
+            66% { transform: translate(-20px, 20px) rotate(-10deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Phase Claire Terminée !</h1>
+        <p>Les thylakoïdes ont libéré l'énergie (ATP et NADPH) dans le stroma. Le chloroplaste est prêt pour la synthèse de matière organique.</p>
+        
+        <button class="btn-sombre" onclick="window.location.href='cycle-calvin/calvin.html'">
+            ACTIVER LA PHASE SOMBRE ➔
+        </button>
+    </div>
+
+    <script>
+        const colors = { 'ATP': '#f1c40f', 'NADPH': '#2ecc71' };
+        const labels = ['ATP', 'NADPH'];
+
+        for(let i=0; i<25; i++) {
+            const m = document.createElement('div');
+            const type = labels[Math.floor(Math.random() * 2)];
+            m.className = 'molecule';
+            m.innerText = type;
+            m.style.backgroundColor = colors[type];
+            m.style.left = Math.random() * 90 + 'vw';
+            m.style.top = Math.random() * 90 + 'vh';
+            m.style.animationDelay = Math.random() * 5 + 's';
+            document.body.appendChild(m);
+        }
+    </script>
+</body>
+</html>

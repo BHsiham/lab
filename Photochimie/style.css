@@ -1,0 +1,435 @@
+/* --- IMPORTATION DES POLICES --- */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap');
+
+/* --- VARIABLES GLOBALES --- */
+:root {
+    --more-sugar: 'Segoe UI', 'Poppins', sans-serif; 
+    --stroma-color: #fffde7;
+    --membrane-green: linear-gradient(180deg, #66bb6a 0%, #2e7d32 50%, #66bb6a 100%);
+    --lumen-blue: #e3f2fd;
+    --accent-yellow: #fbc02d;
+    --text-dark: #1a1a1a;
+}
+
+/* --- BASE & LAYOUT MODERNE --- */
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background-color: #0f0f0f;
+    /* AJOUT : Défilement global du site (longitudinal et horizontal) */
+    overflow: auto !important; 
+    user-select: none;
+    color: white;
+    min-height: 100vh;
+}
+
+/* Amélioration 1 : Layout divisé en Simulateur (75%) et Légende (25%) */
+#game-container {
+    display: flex;
+    flex-direction: row; 
+    height: 100vh;
+    width: 100vw;
+}
+
+#simulator-main {
+    display: flex;
+    flex-direction: column;
+    flex: 3; /* 75% de largeur */
+    height: 100%;
+    position: relative;
+    border-right: 2px solid #333;
+    /* AJOUT : Barres de défilement internes au simulateur */
+    overflow-x: auto; 
+    overflow-y: auto;
+}
+
+/* --- DESIGN DES ÉTAGES (AMÉLIORÉ) --- */
+.zone {
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    /* CHANGEMENT : On permet au contenu de dépasser pour activer le scroll du parent */
+    overflow: visible; 
+}
+
+.stroma { 
+    height: 30%; 
+    background: var(--stroma-color); 
+    border-bottom: 2px solid var(--accent-yellow); 
+}
+
+/* Amélioration 3 : Membrane du thylakoïde avec étiquette intégrée */
+.membrane { 
+    height: 35%; 
+    background: var(--membrane-green);
+    border-top: 4px solid #1b5e20;
+    border-bottom: 4px solid #1b5e20;
+    z-index: 2;
+    box-shadow: inset 0 0 50px rgba(0,0,0,0.2);
+}
+
+/* Étiquette de la membrane bien stylisée */
+.membrane-header {
+    position: absolute;
+    top: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 900;
+    font-size: 1.4em;
+    text-transform: uppercase;
+    letter-spacing: 5px;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 2px 30px;
+    border-radius: 0 0 15px 15px;
+    z-index: 10;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    pointer-events: none;
+}
+
+.lumen { 
+    height: 35%; 
+    background: var(--lumen-blue); 
+    transition: background 0.8s ease, box-shadow 0.8s ease;
+}
+
+.label-zone {
+    position: absolute;
+    top: 15px;
+    left: 20px;
+    font-size: 1.2em;
+    font-weight: 900;
+    color: rgba(0,0,0,0.25);
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    z-index: 10;
+}
+
+/* --- LÉGENDE À DROITE (AMÉLIORATION 1) --- */
+#legend-zone {
+    flex: 1; /* 25% de largeur */
+    background: #ffffff;
+    color: #333;
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: -10px 0 30px rgba(0,0,0,0.2);
+    z-index: 100;
+    overflow-y: auto;
+}
+
+#legend-zone h2 {
+    font-family: var(--more-sugar);
+    color: #1b5e20;
+    border-bottom: 4px solid #81c784;
+    padding-bottom: 10px;
+    margin-top: 0;
+    font-size: 1.8em;
+}
+
+.legend-list {
+    list-style: none;
+    padding: 0;
+}
+
+.legend-item {
+    margin-bottom: 18px;
+    font-size: 1em;
+    line-height: 1.5;
+    font-family: var(--more-sugar);
+    padding-left: 10px;
+    border-left: 4px solid #4caf50;
+}
+
+.legend-item b { color: #2e7d32; font-weight: bold; }
+
+/* --- UI PANEL & ÉTAPES (AMÉLIORATION 2) --- */
+#ui-panel {
+    background: #1a1a1a;
+    color: white;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 4px solid #333;
+    height: 110px;
+}
+
+/* Barre d'étape blanche stylisée */
+#instruction-container {
+    background: white;
+    border-radius: 15px;
+    padding: 10px 30px;
+    width: 50%;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.4), inset 0 0 5px rgba(0,0,0,0.1);
+    border: 1px solid #ddd;
+    transition: all 0.3s ease;
+}
+
+#instruction {
+    color: #222;
+    font-family: var(--more-sugar);
+    font-size: 1.2em;
+    font-weight: 700;
+    text-align: center;
+    margin: 0;
+    line-height: 1.2;
+}
+
+/* --- COMPLEXES PROTÉIQUES --- */
+.complex {
+    width: 90px; height: 120px; 
+    background-color: #4CAF50; 
+    border: 3px solid #1b5e20;
+    border-radius: 15px; 
+    display: flex; justify-content: center; align-items: center;
+    color: white; font-size: 1em; font-weight: bold; 
+    box-shadow: 0 8px 15px rgba(0,0,0,0.4);
+    cursor: pointer; 
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    z-index: 5; text-align: center;
+}
+
+.complex:hover { transform: scale(1.1) translateY(-5px); background-color: #66bb6a; }
+
+/* --- ÉTATS D'EXCITATION --- */
+.ps2-excited {
+    background-color: #ffd700 !important; color: #212121 !important; border: 3px solid #ffaa00 !important;
+    box-shadow: 0 0 30px #ffd700, inset 0 0 15px #ff8c00 !important;
+}
+
+.ps1-excited {
+    background-color: #d32f2f !important; border: 3px solid #b71c1c !important;
+    box-shadow: 0 0 30px #ff5252, inset 0 0 15px #b71c1c !important;
+}
+
+/* Transporteurs mobiles */
+#t1, #t2, #t3 { width: 55px; height: 55px; border-radius: 50%; background: #fb8c00; border: 3px solid #e65100; box-shadow: 0 4px 8px rgba(0,0,0,0.3); }
+
+/* ATP Synthase */
+#atp-synthase {
+    height: 160px; background: #ffb74d;
+    clip-path: polygon(20% 0%, 80% 0%, 80% 60%, 100% 60%, 100% 100%, 0% 100%, 0% 60%, 20% 60%);
+    border: none; color: #5d4037; padding-top: 45px;
+    font-weight: 900;
+    /* Correction Rotation : Préparation pour la 3D */
+    transform-style: preserve-3d;
+    perspective: 1000px;
+}
+
+/* Animation rotation pour ATP Synthase corrigée sur l'axe Y */
+.rotating {
+    animation: rotateComplex 1s infinite linear;
+}
+
+@keyframes rotateComplex {
+    from { transform: rotateY(0deg); }
+    to { transform: rotateY(360deg); }
+}
+
+/* --- OPTIMISATION O1 : EAU (H2O) 3D --- */
+#h2o-molecule {
+    position: relative;
+    width: 65px;
+    height: 60px;
+    cursor: grab;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.atom-o {
+    width: 35px; height: 35px;
+    background: #42a5f5;
+    border-radius: 50%;
+    display: flex; justify-content: center; align-items: center;
+    color: black; font-family: var(--more-sugar); font-weight: 900;
+    z-index: 2; border: 2px solid #0d47a1;
+    box-shadow: inset -3px -3px 8px rgba(0,0,0,0.3);
+}
+
+.atom-h {
+    width: 22px; height: 22px;
+    background: #e3f2fd;
+    border-radius: 50%;
+    display: flex; justify-content: center; align-items: center;
+    color: black; font-family: var(--more-sugar); font-size: 0.8em; font-weight: 900;
+    position: absolute; z-index: 1; border: 1.5px solid #90caf9;
+    box-shadow: inset -2px -2px 5px rgba(0,0,0,0.2);
+}
+
+.h1 { top: 25px; left: 0; }
+.h2 { top: 25px; right: 0; }
+
+/* --- OPTIMISATION O2 : NADP+ & ADP+Pi --- */
+.product-case {
+    padding: 10px 20px;
+    border-radius: 12px;
+    font-family: var(--more-sugar);
+    font-weight: bold;
+    color: black;
+    display: inline-block;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+    text-align: center;
+}
+
+.nadp-case { background-color: #e1bee7; border: 2px solid #9c27b0; }
+.adp-case { background-color: #ffcc80; border: 2px solid #ef6c00; }
+
+/* --- OPTIMISATION O3 : 1/2 O2 (Dégagement lent) --- */
+.oxygen-particle {
+    position: absolute;
+    background: #81d4fa; /* Bleu bulle */
+    color: black;
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    display: flex; justify-content: center; align-items: center;
+    font-family: var(--more-sugar); font-weight: 900;
+    border: 2px solid #0288d1;
+    box-shadow: 0 0 15px rgba(129, 212, 250, 0.7);
+    z-index: 15;
+    animation: oxygenFloat 8s linear forwards; /* Vitesse réduite à 8s */
+}
+
+@keyframes oxygenFloat {
+    from { transform: translateY(0) scale(1); opacity: 1; }
+    to { transform: translateY(-400px) scale(1.2); opacity: 0; }
+}
+
+/* --- PARTICULES (AUTRES) --- */
+.proton-particle {
+    position: absolute; background: #f44336; color: white; width: 26px; height: 26px;
+    border-radius: 50%; display: flex; justify-content: center; align-items: center;
+    font-size: 0.8em; font-weight: bold; box-shadow: 0 0 10px rgba(244, 67, 54, 0.6);
+    z-index: 8; animation: float 3s infinite ease-in-out;
+}
+
+.electron-particle {
+    position: absolute; width: 24px; height: 24px; background: #ffeb3b; color: black;
+    border-radius: 50%; font-size: 0.85em; display: flex; justify-content: center; align-items: center;
+    font-weight: 900; box-shadow: 0 0 20px #ffff00; cursor: grab; z-index: 20; border: 2px solid #fbc02d;
+}
+
+/* --- POPUPS & OVERLAYS --- */
+/* CORRECTION : Transformation en Pop-up plein écran centré pour les barres d'équations */
+.sci-validation-box {
+    position: fixed; 
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 3000; /* Augmenté pour passer devant tout */
+    background: rgba(0, 0, 0, 0.75); /* Fond plus sombre pour focus */
+    text-align: center; 
+    animation: fadeIn 0.4s ease-out;
+    display: flex; 
+    justify-content: center; 
+    align-items: center;
+}
+
+/* Correction E2 : Centrage et barre de défilement INTERNE à la carte d'équation */
+.sci-card {
+    background: white;
+    padding: 30px;
+    border-radius: 25px;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.6);
+    width: 450px;
+    max-height: 85vh; 
+    /* AJOUT : Barre de défilement longitudinale interne pour l'équation */
+    overflow-y: auto; 
+    /* AJOUT : Barre de défilement horizontale interne si l'équation est trop longue */
+    overflow-x: auto; 
+    position: relative; 
+    border: 3px solid var(--accent-yellow);
+    color: #333;
+}
+
+/* S'assure que les inputs d'équations sont bien visibles */
+.sci-card input {
+    width: 80%;
+    padding: 10px;
+    margin: 10px 0;
+    font-size: 1.2em;
+    border-radius: 8px;
+    border: 2px solid #ccc;
+}
+
+/* Correction E1 : Fenêtre réduite pour l'électron */
+#electron-info-popup {
+    position: fixed; 
+    top: 50%; 
+    left: 50%; 
+    transform: translate(-50%, -50%);
+    display: flex; 
+    align-items: center; 
+    background: #fff3e0;
+    border: 4px solid #f44336; 
+    border-radius: 50px; 
+    padding: 20px;
+    width: 400px; 
+    height: auto; 
+    box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+    z-index: 3100;
+}
+
+.popup-message-text { font-family: var(--more-sugar); font-size: 1.1em; color: #c62828; }
+
+/* --- ÉLÉMENTS INTERACTIFS --- */
+.light-beam {
+    width: 80px; height: 45px; border-radius: 25px; color: white; font-weight: bold;
+    display: flex; justify-content: center; align-items: center; cursor: grab; 
+    transition: transform 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.light-beam:hover { transform: scale(1.15) rotate(5deg); }
+
+/* --- ANIMATIONS --- */
+@keyframes vibration-lumen {
+    0%, 100% { transform: translate(0, 0); }
+    25% { transform: translate(2px, 2px); }
+    50% { transform: translate(-2px, -2px); }
+}
+
+.lumen-critique {
+    background-color: #ffcdd2 !important;
+    box-shadow: inset 0 0 100px #ef5350 !important;
+    animation: vibration-lumen 0.1s infinite;
+}
+
+@keyframes float { 
+    0%, 100% { transform: translateY(0); } 
+    50% { transform: translateY(-15px); } 
+}
+
+@keyframes fadeIn { 
+    from { opacity: 0; } 
+    to { opacity: 1; } 
+}
+
+/* --- AJOUT : ANIMATION FÉLICITATIONS (O4) --- */
+@keyframes bounceIn {
+    0% { transform: scale(0.3); opacity: 0; }
+    50% { transform: scale(1.05); opacity: 1; }
+    70% { transform: scale(0.9); }
+    100% { transform: scale(1); }
+}
+
+/* --- BOUTONS --- */
+.btn-ui { 
+    background: #333; color: white; border: none; padding: 12px 20px; 
+    border-radius: 8px; cursor: pointer; transition: 0.3s; 
+    font-weight: bold; text-transform: uppercase;
+}
+.btn-ui:hover { background: #555; transform: translateY(-2px); }
+
+.stat {
+    font-family: monospace; font-size: 1.3em; background: #000; 
+    padding: 8px 20px; border-radius: 6px; border-left: 5px solid #4caf50;
+    box-shadow: inset 0 0 100px rgba(0,255,0,0.1);
+}

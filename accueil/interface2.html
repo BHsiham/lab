@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Structure du Chloroplaste</title>
+    <link rel="stylesheet" href="acc.css">
+    <style>
+        body { background: #000; overflow: hidden; }
+        
+        /* Arrière-plan du chloroplaste */
+        #chloroplast-view {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: url('images/chloroplaste_3d 2.png') no-repeat center center;
+            background-size: cover;
+            filter: brightness(0.8);
+            z-index: 1;
+        }
+
+        /* Effet de rayons de soleil */
+        .sun-rays {
+            position: absolute;
+            top: 0; right: 0; width: 60%; height: 100%;
+            background: url('images/sun_rays.jpg') no-repeat;
+            background-size: contain;
+            opacity: 0.4;
+            mix-blend-mode: screen;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .ui-container {
+            position: relative;
+            z-index: 10;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            padding-bottom: 80px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="chloroplast-view"></div>
+    <div class="sun-rays"></div>
+
+    <div id="particles-container"></div>
+
+    <div class="ui-container">
+        <button class="pulse-button" onclick="lancerPhaseClaire()">
+            Activer la phase claire
+        </button>
+    </div>
+
+    <script>
+        function lancerPhaseClaire() {
+            // On remonte d'un dossier pour aller vers Photochimie
+            window.location.href = "../Photochimie/photochimie.html";
+        }
+
+        // Générateur de particules de lumière
+        function createHalo() {
+            const container = document.getElementById('particles-container');
+            for(let i=0; i<15; i++) {
+                let p = document.createElement('div');
+                p.className = 'particle'; 
+                p.style.left = Math.random() * 100 + "vw";
+                p.style.top = Math.random() * 100 + "vh";
+                p.style.animationDuration = (Math.random() * 3 + 2) + "s";
+                container.appendChild(p);
+            }
+        }
+        window.onload = createHalo;
+    </script>
+</body>
+</html>
