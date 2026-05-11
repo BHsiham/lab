@@ -14,7 +14,7 @@ const state = {
 // --- ÉLÉMENTS DU DOM ---
 const arena = document.getElementById('reaction-arena');
 const recycleBin = document.getElementById('recycle-bin'); 
-const exportBin = document.getElementById('export-bin');   
+const exportBin = document.getElementById('export-bin');    
 const guide = document.getElementById('current-step-text');
 const spawnShelf = document.getElementById('spawn-shelf');
 const rubisco = document.getElementById('rubisco-altar');
