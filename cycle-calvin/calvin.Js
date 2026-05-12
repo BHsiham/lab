@@ -96,7 +96,7 @@ function updateBatteries() {
 updateBatteries();
 
 // --- AJUSTEMENT 14 : LOGIQUE DU QUIZ ---
-function checkQuiz(answer) {
+/* function checkQuiz(answer) {
     const feedback = document.getElementById('quiz-feedback');
     const overlay = document.getElementById('quiz-overlay');
     
@@ -123,6 +123,7 @@ function checkQuiz(answer) {
         card.style.animation = "shake 0.5s";
     }
 }
+*/
 
 // --- AJUSTEMENT 15 : LOGIQUE DES BOUTONS DE CONTRÔLE ---
 document.getElementById('btn-pause').onclick = function() {
