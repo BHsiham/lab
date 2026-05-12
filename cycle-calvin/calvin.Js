@@ -104,10 +104,14 @@ function checkQuiz(answer) {
         feedback.style.color = "#27ae60";
         feedback.innerText = "✅ Bonne réponse ! Chargement du Stroma...";
         
+        // CORRECTION : On désactive immédiatement les interactions avec l'overlay
+        overlay.style.pointerEvents = "none";
+        
         setTimeout(() => {
             overlay.style.opacity = "0";
-            overlay.style.pointerEvents = "none";
-            setTimeout(() => overlay.remove(), 500);
+            setTimeout(() => {
+                if(overlay.parentNode) overlay.remove();
+            }, 500);
         }, 1000);
     } else {
         feedback.style.color = "#e74c3c";
